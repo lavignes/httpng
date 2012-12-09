@@ -28,6 +28,8 @@ static GOptionEntry entries[] = {
   { NULL }
 };
 
+void page_loaded(GtkWidget* view, gpointer data);
+
 int main(int argc, char** argv) {
 
   gtk_init(&argc, &argv);
@@ -40,7 +42,12 @@ int main(int argc, char** argv) {
   g_option_context_add_main_entries(context, entries, NULL);
   g_option_context_add_group(context, gtk_get_option_group(TRUE));
   if (!g_option_context_parse(context, &argc, &argv, &error)) {
-    g_print ("option parsing failed: %s\n", error->message);
+    g_printerr("option parsing failed: %s\n", error->message);
+    return 1;
+  }
+
+  if (!rest || !rest[1]) {
+    g_printerr("%s", g_option_context_get_help(context, TRUE, NULL)); 
     return 1;
   }
 
@@ -65,9 +72,10 @@ int main(int argc, char** argv) {
   g_object_set(G_OBJECT(settings), "auto-load-images", load_images, NULL);
 
   GtkWidget* scrollbars = gtk_scrolled_window_new(NULL, NULL);
-  gtk_container_add(GTK_CONTAINER(scrollbars), view);
-  gtk_container_add(GTK_CONTAINER(window), scrollbars);
+  //gtk_container_add(GTK_CONTAINER(scrollbars), view);
+  gtk_container_add(GTK_CONTAINER(window), view);
 
+  g_signal_connect(view, "notify::load-status", G_CALLBACK(page_loaded), NULL);
   webkit_web_view_load_uri(WEBKIT_WEB_VIEW(view), rest[0]);
 
   gtk_widget_show_all(window);
@@ -75,4 +83,34 @@ int main(int argc, char** argv) {
   gtk_main();
 
   return 0;
+}
+
+void page_loaded(GtkWidget* view, gpointer data) {
+
+  WebKitLoadStatus status = webkit_web_view_get_load_status(WEBKIT_WEB_VIEW(view));
+  
+  if (status != WEBKIT_LOAD_FINISHED) {
+    return;
+  }
+
+  printf("Page load complete!\n");
+
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(view, &allocation);
+
+  cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
+  
+  cairo_t* cr = cairo_create(surface);
+  cairo_scale(cr, width/(double)allocation.width, height/(double)allocation.height);
+
+  // Draw main window
+  WebKitWebFrame* frame = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(view));
+  gtk_widget_draw(view, cr);
+
+  cairo_surface_write_to_png(surface, rest[1]);
+
+  cairo_destroy(cr);
+  cairo_surface_destroy(surface);
+
+  gtk_main_quit();
 }
