@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
   GtkWidget* view = webkit_web_view_new();
   webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(view), zoom/100.0f);
   WebKitWebSettings* settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(view));
-  g_object_set(G_OBJECT(settings), "enable-scripts", FALSE, NULL);
+  g_object_set(G_OBJECT(settings), "enable-scripts", TRUE, NULL);
   g_object_set(G_OBJECT(settings), "enable-html5-database", FALSE, NULL);
   g_object_set(G_OBJECT(settings), "enable-html5-local-storage", FALSE, NULL);
   g_object_set(G_OBJECT(settings), "enable-offline-web-application-cache", FALSE, NULL);
@@ -64,7 +64,9 @@ int main(int argc, char** argv) {
   g_object_set(G_OBJECT(settings), "user-agent", user_agent, NULL);
   g_object_set(G_OBJECT(settings), "auto-load-images", load_images, NULL);
 
-  gtk_container_add(GTK_CONTAINER(window), view);
+  GtkWidget* scrollbars = gtk_scrolled_window_new(NULL, NULL);
+  gtk_container_add(GTK_CONTAINER(scrollbars), view);
+  gtk_container_add(GTK_CONTAINER(window), scrollbars);
 
   webkit_web_view_load_uri(WEBKIT_WEB_VIEW(view), rest[0]);
 
