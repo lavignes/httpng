@@ -1,0 +1,22 @@
+Usage:
+  httpng [OPTION...] url filename.png
+
+Take a thumbnail of a website.
+
+Help Options:
+  -?, --help               Show help options
+  --help-all               Show all help options
+  --help-gtk               Show GTK+ Options
+
+Application Options:
+  -i, --images             Load images
+  -f, --favicon            Add favicon
+  -w, --width              Image width
+  -h, --height             Image height
+  --dwidth                 Device width
+  --dheight                Device height
+  -z, --zoom               Zoom level (25-500)%
+  -x, --xpan               Horizontal panning
+  -y, --ypan               Veritical panning
+  -u, ----user-agent       User agent string
+  --display=DISPLAY        X display to use

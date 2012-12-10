@@ -3,6 +3,7 @@
 #include <webkit/webkit.h>
 
 static gboolean load_images = FALSE;
+static gboolean show_favicon = FALSE;
 static gint device_width = 800;
 static gint device_height = 600;
 static gint width = 800;
@@ -15,6 +16,7 @@ static gchar** rest = NULL;
 
 static GOptionEntry entries[] = {
   { "images", 'i', 0, G_OPTION_ARG_NONE, &load_images, "Load images", NULL },
+  { "favicon", 'f', 0, G_OPTION_ARG_NONE, &show_favicon, "Add favicon", NULL },
   { "width", 'w', 0, G_OPTION_ARG_INT, &width, "Image width", NULL },
   { "height", 'h', 0, G_OPTION_ARG_INT, &height, "Image height", NULL },
   { "dwidth", 0, 0, G_OPTION_ARG_INT, &device_width, "Device width", NULL },
@@ -29,6 +31,7 @@ static GOptionEntry entries[] = {
 };
 
 void page_loaded(GtkWidget* view, gpointer data);
+void icon_loaded(GtkWidget* view, gpointer data);
 
 int main(int argc, char** argv) {
 
@@ -51,7 +54,7 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  GtkWidget* window = gtk_offscreen_window_new();
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
   gtk_window_set_default_size(GTK_WINDOW(window), device_width, device_height);
@@ -78,6 +81,8 @@ int main(int argc, char** argv) {
   g_signal_connect(view, "notify::load-status", G_CALLBACK(page_loaded), NULL);
   webkit_web_view_load_uri(WEBKIT_WEB_VIEW(view), rest[0]);
 
+  g_signal_connect(view, "icon-loaded", G_CALLBACK(icon_loaded), NULL);
+
   gtk_widget_show_all(window);
 
   gtk_main();
@@ -92,8 +97,11 @@ void page_loaded(GtkWidget* view, gpointer data) {
   if (status != WEBKIT_LOAD_FINISHED) {
     return;
   }
+}
 
-  printf("Page load complete!\n");
+void icon_loaded(GtkWidget* view, gpointer data) {
+  
+  GdkPixbuf* favicon = webkit_web_view_try_get_favicon_pixbuf(WEBKIT_WEB_VIEW(view), 32, 32);
 
   GtkAllocation allocation;
   gtk_widget_get_allocation(view, &allocation);
@@ -101,11 +109,20 @@ void page_loaded(GtkWidget* view, gpointer data) {
   cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
   
   cairo_t* cr = cairo_create(surface);
+
+  cairo_save(cr);
   cairo_scale(cr, width/(double)allocation.width, height/(double)allocation.height);
 
   // Draw main window
   WebKitWebFrame* frame = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(view));
   gtk_widget_draw(view, cr);
+  cairo_restore(cr);
+
+  // Try adding favicon
+  if (favicon && show_favicon) {
+    gdk_cairo_set_source_pixbuf(cr, favicon, 8, 8);
+    cairo_paint(cr);
+  }
 
   cairo_surface_write_to_png(surface, rest[1]);
 
