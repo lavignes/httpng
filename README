@@ -18,5 +18,5 @@ Application Options:
   -z, --zoom               Zoom level (25-500)%
   -x, --xpan               Horizontal panning
   -y, --ypan               Veritical panning
-  -u, ----user-agent       User agent string
+  -u, --user-agent       User agent string
   --display=DISPLAY        X display to use

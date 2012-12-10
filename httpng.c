@@ -24,7 +24,7 @@ static GOptionEntry entries[] = {
   { "zoom", 'z', 0, G_OPTION_ARG_INT, &zoom, "Zoom level (25-500)%", NULL },
   { "xpan", 'x', 0, G_OPTION_ARG_INT, &x, "Horizontal panning", NULL },
   { "ypan", 'y', 0, G_OPTION_ARG_INT, &y, "Veritical panning", NULL },
-  { "--user-agent", 'u', 0, G_OPTION_ARG_STRING, &user_agent, "User agent string", NULL },
+  { "user-agent", 'u', 0, G_OPTION_ARG_STRING, &user_agent, "User agent string", NULL },
   { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &rest, NULL, NULL },
 
   { NULL }
@@ -101,7 +101,7 @@ void page_loaded(GtkWidget* view, gpointer data) {
 
 void icon_loaded(GtkWidget* view, gpointer data) {
   
-  GdkPixbuf* favicon = webkit_web_view_try_get_favicon_pixbuf(WEBKIT_WEB_VIEW(view), 32, 32);
+  GdkPixbuf* favicon = webkit_web_view_try_get_favicon_pixbuf(WEBKIT_WEB_VIEW(view), 16, 16);
 
   GtkAllocation allocation;
   gtk_widget_get_allocation(view, &allocation);
@@ -120,7 +120,7 @@ void icon_loaded(GtkWidget* view, gpointer data) {
 
   // Try adding favicon
   if (favicon && show_favicon) {
-    gdk_cairo_set_source_pixbuf(cr, favicon, 8, 8);
+    gdk_cairo_set_source_pixbuf(cr, favicon, 8, height - gdk_pixbuf_get_height(favicon) - 8);
     cairo_paint(cr);
   }
 
