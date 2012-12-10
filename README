@@ -11,12 +11,13 @@ Help Options:
 Application Options:
   -i, --images             Load images
   -f, --favicon            Add favicon
-  -w, --width              Image width
-  -h, --height             Image height
-  --dwidth                 Device width
-  --dheight                Device height
-  -z, --zoom               Zoom level (25-500)%
-  -x, --xpan               Horizontal panning
-  -y, --ypan               Veritical panning
-  -u, --user-agent       User agent string
+  -w, --width              Image width (Default: 800)
+  -h, --height             Image height (Default: 600)
+  --dwidth                 Device width (Default: 800)
+  --dheight                Device height (Default: 600)
+  -z, --zoom               Zoom level (25-500)% (Default: 100)
+  -x, --xpan               Horizontal panning (Default: 0)
+  -y, --ypan               Veritical panning (Default: 0)
+  -u, --user-agent         User agent string
   --display=DISPLAY        X display to use
+

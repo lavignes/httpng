@@ -17,13 +17,13 @@ static gchar** rest = NULL;
 static GOptionEntry entries[] = {
   { "images", 'i', 0, G_OPTION_ARG_NONE, &load_images, "Load images", NULL },
   { "favicon", 'f', 0, G_OPTION_ARG_NONE, &show_favicon, "Add favicon", NULL },
-  { "width", 'w', 0, G_OPTION_ARG_INT, &width, "Image width", NULL },
-  { "height", 'h', 0, G_OPTION_ARG_INT, &height, "Image height", NULL },
-  { "dwidth", 0, 0, G_OPTION_ARG_INT, &device_width, "Device width", NULL },
-  { "dheight", 0, 0, G_OPTION_ARG_INT, &device_height, "Device height", NULL },
-  { "zoom", 'z', 0, G_OPTION_ARG_INT, &zoom, "Zoom level (25-500)%", NULL },
-  { "xpan", 'x', 0, G_OPTION_ARG_INT, &x, "Horizontal panning", NULL },
-  { "ypan", 'y', 0, G_OPTION_ARG_INT, &y, "Veritical panning", NULL },
+  { "width", 'w', 0, G_OPTION_ARG_INT, &width, "Image width (Default: 800)", NULL },
+  { "height", 'h', 0, G_OPTION_ARG_INT, &height, "Image height (Default: 600)", NULL },
+  { "dwidth", 0, 0, G_OPTION_ARG_INT, &device_width, "Device width (Default: 800)", NULL },
+  { "dheight", 0, 0, G_OPTION_ARG_INT, &device_height, "Device height (Default: 600)", NULL },
+  { "zoom", 'z', 0, G_OPTION_ARG_INT, &zoom, "Zoom level (25-500)% (Default: 100)", NULL },
+  { "xpan", 'x', 0, G_OPTION_ARG_INT, &x, "Horizontal panning (Default: 0)", NULL },
+  { "ypan", 'y', 0, G_OPTION_ARG_INT, &y, "Veritical panning (Default: 0)", NULL },
   { "user-agent", 'u', 0, G_OPTION_ARG_STRING, &user_agent, "User agent string", NULL },
   { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &rest, NULL, NULL },
 
@@ -111,9 +111,6 @@ void icon_loaded(GtkWidget* view, gpointer data) {
   cairo_t* cr = cairo_create(surface);
 
   cairo_save(cr);
-
-  cairo_rectangle(cr, 0, 0, width, height);
-  cairo_clip(cr);
 
   if (allocation.width < allocation.height)
     cairo_scale(cr, width/(double)allocation.width, width/(double)allocation.width);
