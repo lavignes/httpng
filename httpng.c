@@ -111,10 +111,18 @@ void icon_loaded(GtkWidget* view, gpointer data) {
   cairo_t* cr = cairo_create(surface);
 
   cairo_save(cr);
-  cairo_scale(cr, width/(double)allocation.width, height/(double)allocation.height);
+
+  cairo_rectangle(cr, 0, 0, width, height);
+  cairo_clip(cr);
+
+  if (allocation.width < allocation.height)
+    cairo_scale(cr, width/(double)allocation.width, width/(double)allocation.width);
+  else
+    cairo_scale(cr, width/(double)allocation.width, height/(double)allocation.height);
 
   // Draw main window
   WebKitWebFrame* frame = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(view));
+
   gtk_widget_draw(view, cr);
   cairo_restore(cr);
 
