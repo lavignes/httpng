@@ -14,6 +14,9 @@ static gint y = 0;
 static gchar* user_agent;
 static gchar** rest = NULL;
 
+static gboolean is_page_loaded = FALSE;
+static gboolean is_icon_loaded = FALSE;
+
 static GOptionEntry entries[] = {
   { "images", 'i', 0, G_OPTION_ARG_NONE, &load_images, "Load images", NULL },
   { "favicon", 'f', 0, G_OPTION_ARG_NONE, &show_favicon, "Add favicon", NULL },
@@ -90,17 +93,8 @@ int main(int argc, char** argv) {
   return 0;
 }
 
-void page_loaded(GtkWidget* view, gpointer data) {
+void snap(GtkWidget* view, gpointer data) {
 
-  WebKitLoadStatus status = webkit_web_view_get_load_status(WEBKIT_WEB_VIEW(view));
-  
-  if (status != WEBKIT_LOAD_FINISHED) {
-    return;
-  }
-}
-
-void icon_loaded(GtkWidget* view, gpointer data) {
-  
   GdkPixbuf* favicon = webkit_web_view_try_get_favicon_pixbuf(WEBKIT_WEB_VIEW(view), 16, 16);
 
   GtkAllocation allocation;
@@ -135,4 +129,34 @@ void icon_loaded(GtkWidget* view, gpointer data) {
   cairo_surface_destroy(surface);
 
   gtk_main_quit();
+}
+
+void page_loaded(GtkWidget* view, gpointer data) {
+
+  WebKitLoadStatus status = webkit_web_view_get_load_status(WEBKIT_WEB_VIEW(view));
+  
+  if (status != WEBKIT_LOAD_FINISHED) {
+    return;
+  }
+
+  is_page_loaded = TRUE;
+
+  if (show_favicon) {
+    if (!is_icon_loaded) {
+      return;
+    } else {
+      snap(view, data);
+    }
+  } else {
+    snap(view, data);
+  }
+}
+
+void icon_loaded(GtkWidget* view, gpointer data) {
+  
+  is_icon_loaded = TRUE;
+
+  // The page had better been loaded by this point
+  if (is_page_loaded)
+    snap(view, data);
 }
