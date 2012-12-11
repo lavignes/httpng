@@ -98,14 +98,6 @@ int main(int argc, char** argv) {
   return 0;
 }
 
-gboolean timeout(gpointer data) {
-
-  GtkWidget* view = GTK_WIDGET(data);
-  snap(view, NULL);
-
-  return false;
-}
-
 void snap(GtkWidget* view, gpointer data) {
 
   GdkPixbuf* favicon = webkit_web_view_try_get_favicon_pixbuf(WEBKIT_WEB_VIEW(view), 16, 16);
@@ -142,6 +134,14 @@ void snap(GtkWidget* view, gpointer data) {
   cairo_surface_destroy(surface);
 
   gtk_main_quit();
+}
+
+gboolean timeout(gpointer data) {
+
+  GtkWidget* view = GTK_WIDGET(data);
+  snap(view, NULL);
+
+  return false;
 }
 
 void page_loaded(GtkWidget* view, gpointer data) {
