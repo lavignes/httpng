@@ -119,6 +119,7 @@ void snap(GtkWidget* view, gpointer data) {
   // Draw main window
   WebKitWebFrame* frame = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(view));
 
+  cairo_set_antialias(cr, CAIRO_ANTIALIAS_SUBPIXEL);
   gtk_widget_draw(view, cr);
   cairo_restore(cr);
 
