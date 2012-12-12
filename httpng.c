@@ -111,10 +111,13 @@ void snap(GtkWidget* view, gpointer data) {
 
   cairo_save(cr);
 
-/*  if (allocation.width < allocation.height)
-    cairo_scale(cr, width/(double)allocation.width, width/(double)allocation.width);
-  else*/
-    cairo_scale(cr, width/(double)allocation.width, height/(double)allocation.height);
+  gdouble scalex = (gdouble) width / (gdouble) allocation.width;
+  gdouble scaley = (gdouble) height / (gdouble) allocation.height;
+
+  if (scaley > scalex*2.0)
+    cairo_scale(cr, scalex, scalex);
+  else
+    cairo_scale(cr, scalex, scaley);
 
   // Draw main window
   WebKitWebFrame* frame = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(view));
