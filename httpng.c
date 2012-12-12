@@ -114,7 +114,7 @@ void snap(GtkWidget* view, gpointer data) {
   gdouble scalex = (gdouble) width / (gdouble) allocation.width;
   gdouble scaley = (gdouble) height / (gdouble) allocation.height;
 
-  if (allocation.width > allocation.height)
+  if (allocation.width < allocation.height)
     cairo_scale(cr, scalex, scalex);
   else
     cairo_scale(cr, scalex, scaley);
