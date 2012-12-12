@@ -111,9 +111,9 @@ void snap(GtkWidget* view, gpointer data) {
 
   cairo_save(cr);
 
-  if (allocation.width < allocation.height)
+/*  if (allocation.width < allocation.height)
     cairo_scale(cr, width/(double)allocation.width, width/(double)allocation.width);
-  else
+  else*/
     cairo_scale(cr, width/(double)allocation.width, height/(double)allocation.height);
 
   // Draw main window
