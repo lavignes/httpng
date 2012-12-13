@@ -1,3 +1,10 @@
+# httpng
+
+A web thumbnailer written in C.
+
+## Usage
+
+```
 Usage:
   httpng [OPTION...] url filename.png
 
@@ -20,4 +27,10 @@ Application Options:
   -y, --ypan               Veritical panning (Default: 0)
   -u, --user-agent         User agent string
   --display=DISPLAY        X display to use
+```
 
+## Copyright
+
+Copyright (c) 2012 Scott LaVigne. See [LICENSE.txt][license] for details.
+
+[license]: https://github.com/pyrated/httpng/blob/master/LICENSE.txt
